@@ -4,3 +4,6 @@ pymongo
 python-dotenv
 requests
 gunicorn
+pyyaml
+ua-parser
+user-agents
