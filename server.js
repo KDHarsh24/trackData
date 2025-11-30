@@ -20,8 +20,6 @@ mongoose.connect(process.env.MONGO_URI || process.env.MONGO_URL || config.MONGO_
 app.use('/track', trackRouter);
 app.get('/', (req, res) => res.send('Tracker server running'));
 
-if (require.main === module) {
-    app.listen(process.env.PORT || 3000, () => console.log(`Tracker server listening on port ${process.env.PORT || 3000}`));
-}
+app.listen(process.env.PORT, () => console.log(`Tracker server listening on port ${process.env.PORT}`));
 
 module.exports = app;
