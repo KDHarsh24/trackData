@@ -1,9 +1,0 @@
-Flask
-flask-cors
-pymongo
-python-dotenv
-requests
-gunicorn
-pyyaml
-ua-parser
-user-agents
