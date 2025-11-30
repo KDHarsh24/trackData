@@ -13,6 +13,6 @@ const TrackSchema = new mongoose.Schema({
   meta: Object, // Flexible field for extra metadata
   timestamp: { type: Date, default: Date.now },
   rawHeaders: Object
-}, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
+});
 
-module.exports = mongoose.model('tracker', TrackSchema);
+module.exports = mongoose.model('tracker', TrackSchema, 'portfolio');

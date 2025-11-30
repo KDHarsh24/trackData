@@ -9,7 +9,6 @@ const router = express.Router();
 
 // POST /track
 router.post('/', async (req, res) => {
-  console.log('Received payload:', JSON.stringify(req.body));
   try {
     const received = req.body || {};
     // Extract basic fields sent from client
@@ -40,6 +39,7 @@ router.post('/', async (req, res) => {
       url, 
       referrer, 
       language, 
+	  timestamp: received.timestamp ? new Date(received.timestamp) : undefined,
       meta, 
       rawHeaders: config.NODE_ENV !== 'production' ? { host: req.headers.host } : undefined
     };
