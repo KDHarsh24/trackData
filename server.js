@@ -13,9 +13,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(requestIp.mw());
 
-// Connect to MongoDB
-console.log('Attempting to connect to MongoDB...');
-console.log('Using MONGO_URI:', process.env.MONGO_URI || process.env.MONGO_URL || config.MONGO_URI);
+// console.log('Using MONGO_URI:', process.env.MONGO_URI || process.env.MONGO_URL || config.MONGO_URI);
 mongoose.connect(process.env.MONGO_URI || process.env.MONGO_URL || config.MONGO_URI || 'mongodb://localhost:27017/tracker').then(() => console.log('MongoDB connected successfully')).catch(err => console.error('MongoDB connection error:', err));
 
 // Mount routes
@@ -23,8 +21,6 @@ app.use('/track', trackRouter);
 
 app.get('/', (req, res) => res.send('Tracker server running'));
 
-if (require.main === module) {
-  app.listen(config.PORT, () => console.log(`Tracker server listening on port ${config.PORT}`));
-}
+app.listen(process.env.PORT, () => console.log(`Tracker server listening on port ${process.env.PORT}`));
 
 module.exports = app;
