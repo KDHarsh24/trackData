@@ -15,9 +15,8 @@ app.use(requestIp.mw());
 
 // Connect to MongoDB
 console.log('Attempting to connect to MongoDB...');
-mongoose.connect(process.env.MONGO_URI || process.env.MONGO_URL || config.MONGO_URI || 'mongodb://localhost:27017/tracker')
-  .then(() => console.log('MongoDB connected successfully'))
-  .catch(err => console.error('MongoDB connection error:', err));
+console.log('Using MONGO_URI:', process.env.MONGO_URI || process.env.MONGO_URL || config.MONGO_URI);
+mongoose.connect(process.env.MONGO_URI || process.env.MONGO_URL || config.MONGO_URI || 'mongodb://localhost:27017/tracker').then(() => console.log('MongoDB connected successfully')).catch(err => console.error('MongoDB connection error:', err));
 
 // Mount routes
 app.use('/track', trackRouter);
