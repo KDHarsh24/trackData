@@ -18,7 +18,6 @@ mongoose.connect(process.env.MONGO_URI || process.env.MONGO_URL || config.MONGO_
 
 // Mount routes
 app.use('/track', trackRouter);
-
 app.get('/', (req, res) => res.send('Tracker server running'));
 
 app.listen(process.env.PORT, () => console.log(`Tracker server listening on port ${process.env.PORT}`));
