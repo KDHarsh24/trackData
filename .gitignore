@@ -58,3 +58,6 @@ logs/
 /.parcel-cache/
 *.tgz
 *.log
+
+# Vercel
+.vercel

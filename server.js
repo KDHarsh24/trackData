@@ -19,4 +19,8 @@ app.use('/track', trackRouter);
 
 app.get('/', (req, res) => res.send('Tracker server running'));
 
-app.listen(config.PORT, () => console.log(`Tracker server listening on port ${config.PORT}`));
+if (require.main === module) {
+  app.listen(config.PORT, () => console.log(`Tracker server listening on port ${config.PORT}`));
+}
+
+module.exports = app;
