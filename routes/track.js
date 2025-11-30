@@ -9,6 +9,7 @@ const router = express.Router();
 
 // POST /track
 router.post('/', async (req, res) => {
+  console.log('Received payload:', JSON.stringify(req.body));
   try {
     const received = req.body || {};
     // Extract basic fields sent from client

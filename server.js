@@ -6,13 +6,18 @@ const mongoose = require('mongoose');
 const config = require('./config');
 const trackRouter = require('./routes/track');
 
+console.log('Initializing Tracker Server...');
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(requestIp.mw());
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI || process.env.MONGO_URL || config.MONGO_URI || 'mongodb://localhost:27017/tracker').then(() => console.log('MongoDB connected')).catch(err => console.error('MongoDB connection error:', err));
+console.log('Attempting to connect to MongoDB...');
+mongoose.connect(process.env.MONGO_URI || process.env.MONGO_URL || config.MONGO_URI || 'mongodb://localhost:27017/tracker')
+  .then(() => console.log('MongoDB connected successfully'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 // Mount routes
 app.use('/track', trackRouter);
