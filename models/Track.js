@@ -15,4 +15,4 @@ const TrackSchema = new mongoose.Schema({
   rawHeaders: Object
 });
 
-module.exports = mongoose.model('tracker', TrackSchema, 'portfolio');
+module.exports = mongoose.model('tracker', TrackSchema, 'tracker');
