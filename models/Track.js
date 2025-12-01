@@ -19,4 +19,4 @@ const TrackSchema = new mongoose.Schema({
 // elastic-like searches via MongoDB text/regex queries.
 TrackSchema.index({ ip: 'text', url: 'text', referrer: 'text', userAgent: 'text', language: 'text', meta: 'text' });
 
-module.exports = mongoose.model('tracker', TrackSchema, 'tracker');
+module.exports = mongoose.model('trackers', TrackSchema, 'trackers');

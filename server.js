@@ -19,6 +19,7 @@ app.use(requestIp.mw());
 // console.log('Using MONGO_URI:', process.env.MONGO_URI || process.env.MONGO_URL || config.MONGO_URI);
 
 let mongoUri = process.env.MONGO_URI || process.env.MONGO_URL || config.MONGO_URI || 'mongodb://localhost:27017/tracker';
+console.log('Using effective MONGO_URI (pre-processed):', process.env.MONGO_URI || process.env.MONGO_URL || config.MONGO_URI || '(default)');
 // Force database name in URI if possible, or use dbName option
 if (mongoUri.includes('mongodb.net') && !mongoUri.includes('/portfolio')) {
     if (mongoUri.includes('?')) {
@@ -28,11 +29,17 @@ if (mongoUri.includes('mongodb.net') && !mongoUri.includes('/portfolio')) {
     }
 }
 
+console.log('Final mongoUri used to connect:', mongoUri);
 mongoose.connect(mongoUri, {
     dbName: 'portfolio'
 }).then(() => {
     console.log('MongoDB connected successfully');
-    console.log('Connected to DB:', mongoose.connection.name);
+    try{
+        console.log('Mongoose connection name:', mongoose.connection.name);
+        console.log('Mongoose connection readyState:', mongoose.connection.readyState);
+        if (mongoose.connection.host) console.log('Mongoose host:', mongoose.connection.host);
+        if (mongoose.connection.client && mongoose.connection.client.s && mongoose.connection.client.s.url) console.log('Driver URL:', mongoose.connection.client.s.url);
+    }catch(e){/* ignore logging errors */}
 }).catch(err => console.error('MongoDB connection error:', err));
 
 

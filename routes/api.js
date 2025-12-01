@@ -4,6 +4,8 @@ const Track = require('../models/Track');
 
 const router = express.Router();
 
+const mongoose = require('mongoose');
+
 function parseIntParam(v, def) {
   const n = parseInt(v, 10);
   return Number.isNaN(n) ? def : n;
@@ -66,4 +68,21 @@ router.get('/trackers', async (req, res) => {
   }
 });
 
+// GET /api/health - connection info for debugging
+router.get('/health', (req, res) => {
+  try {
+    const conn = mongoose.connection;
+    const info = {
+      readyState: conn.readyState,
+      name: conn.name || (conn.db && conn.db.databaseName) || null,
+      host: conn.host || null,
+      port: conn.port || null
+    };
+    res.json({ ok: true, connection: info });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: String(err) });
+  }
+});
+
 module.exports = router;
+
