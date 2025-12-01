@@ -14,9 +14,24 @@ app.use(bodyParser.json());
 app.use(requestIp.mw());
 
 // console.log('Using MONGO_URI:', process.env.MONGO_URI || process.env.MONGO_URL || config.MONGO_URI);
-mongoose.connect(process.env.MONGO_URI || process.env.MONGO_URL || config.MONGO_URI || 'mongodb://localhost:27017/tracker', {
+
+let mongoUri = process.env.MONGO_URI || process.env.MONGO_URL || config.MONGO_URI || 'mongodb://localhost:27017/tracker';
+// Force database name in URI if possible, or use dbName option
+if (mongoUri.includes('mongodb.net') && !mongoUri.includes('/portfolio')) {
+    if (mongoUri.includes('?')) {
+        mongoUri = mongoUri.replace('?', '/portfolio?');
+    } else {
+        mongoUri += '/portfolio';
+    }
+}
+
+mongoose.connect(mongoUri, {
     dbName: 'portfolio'
-}).then(() => console.log('MongoDB connected successfully')).catch(err => console.error('MongoDB connection error:', err));
+}).then(() => {
+    console.log('MongoDB connected successfully');
+    console.log('Connected to DB:', mongoose.connection.name);
+}).catch(err => console.error('MongoDB connection error:', err));
+
 
 
 // Mount routes
