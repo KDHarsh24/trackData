@@ -4,7 +4,10 @@ const cors = require('cors');
 const requestIp = require('request-ip');
 const mongoose = require('mongoose');
 const config = require('./config');
+const path = require('path');
 const trackRouter = require('./routes/track');
+const sendMessageRouter = require('./routes/sendMessage');
+const apiRouter = require('./routes/api');
 
 console.log('Initializing Tracker Server...');
 
@@ -36,7 +39,11 @@ mongoose.connect(mongoUri, {
 
 // Mount routes
 app.use('/track', trackRouter);
-app.get('/', (req, res) => res.send('Tracker server running'));
+app.use('/send-message', sendMessageRouter);
+app.use('/api', apiRouter);
+app.get('/', (req, res) => {
+        res.sendFile(path.join(__dirname, 'views', 'admin.html'));
+});
 
 if (require.main === module) {
     app.listen(process.env.PORT || 3000, () => console.log(`Tracker server listening on port ${process.env.PORT || 3000}`));
