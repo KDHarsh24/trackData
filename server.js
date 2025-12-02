@@ -42,6 +42,27 @@ mongoose.connect(mongoUri, {
     }catch(e){/* ignore logging errors */}
 }).catch(err => console.error('MongoDB connection error:', err));
 
+// After connected, attempt to sync indexes for models to remove any old
+// text indexes that used `language` as a language_override (which causes
+// 'language override unsupported: en-US' errors). syncIndexes will drop
+// indexes that don't match the model definitions and create any missing ones.
+mongoose.connection.once('open', async () => {
+    try {
+        console.log('Syncing model indexes (Track, Message) to database...');
+        // require models to ensure they are registered
+        const Track = require('./models/Track');
+        const Message = require('./models/Message');
+
+        const trackResult = await Track.syncIndexes();
+        console.log('Track.syncIndexes result:', trackResult);
+
+        const msgResult = await Message.syncIndexes();
+        console.log('Message.syncIndexes result:', msgResult);
+    } catch (err) {
+        console.error('Error syncing indexes:', err);
+    }
+});
+
 
 
 // Mount routes

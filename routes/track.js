@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
       meta, 
       rawHeaders: config.NODE_ENV !== 'production' ? { host: req.headers.host } : undefined
     };
-
+    console.log('Track payload:', payload);
     // persist to MongoDB
     try {
       const newTrack = new Track(payload);
