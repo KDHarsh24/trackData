@@ -17,13 +17,6 @@ const TrackSchema = new mongoose.Schema({
 
 // Create a text index across common searchable fields so we can implement
 // elastic-like searches via MongoDB text/regex queries.
-// Important: set `language_override` to a field name we don't use (e.g. 'lang')
-// so MongoDB won't interpret the document `language` field (which may be
-// values like 'en-US') as a language override. Also set a sensible
-// default_language.
-TrackSchema.index(
-  { ip: 'text', url: 'text', referrer: 'text', userAgent: 'text', language: 'text', meta: 'text' },
-  { default_language: 'english', language_override: 'lang' }
-);
+TrackSchema.index({ ip: 'text', url: 'text', referrer: 'text', userAgent: 'text', language: 'text', meta: 'text' });
 
 module.exports = mongoose.model('trackers', TrackSchema, 'trackers');
