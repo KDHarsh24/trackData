@@ -7,7 +7,7 @@ const MessageSchema = new mongoose.Schema({
   timestamp: { type: Date, default: Date.now }
 }, { timestamps: { createdAt: 'created_at' } });
 
-// Text index for quick search across message fields
-MessageSchema.index({ name: 'text', email: 'text', message: 'text' });
+// Text index for quick search across message fields. Use `lang` as language_override
+MessageSchema.index({ name: 'text', email: 'text', message: 'text' }, { name: 'MessageTextIndex', language_override: 'lang' });
 
 module.exports = mongoose.model('Message', MessageSchema, 'messages');
