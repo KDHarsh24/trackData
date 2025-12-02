@@ -17,6 +17,15 @@ const TrackSchema = new mongoose.Schema({
 
 // Create a text index across common searchable fields so we can implement
 // elastic-like searches via MongoDB text/regex queries.
-TrackSchema.index({ ip: 'text', url: 'text', referrer: 'text', userAgent: 'text', language: 'text', meta: 'text' });
+// NOTE: MongoDB treats a field named "language" as the text-search language
+// override by default. If the app stores values like "en-IN", MongoDB will
+// warn "language override unsupported: en-IN". To avoid that, do not use the
+// field name `language` for language override. We exclude `language` from the
+// text index and set a custom language_override option (looking for `lang`)
+// so storing `language` in documents won't trigger the warning.
+TrackSchema.index(
+  { ip: 'text', url: 'text', referrer: 'text', userAgent: 'text', meta: 'text' },
+  { name: 'TrackTextIndex', language_override: 'lang' }
+);
 
 module.exports = mongoose.model('trackers', TrackSchema, 'trackers');
