@@ -23,8 +23,22 @@ const TrackSchema = new mongoose.Schema({
 // field name `language` for language override. We exclude `language` from the
 // text index and set a custom language_override option (looking for `lang`)
 // so storing `language` in documents won't trigger the warning.
+// Include key geo subfields in the text index so searches will match
+// city, region, country, org, timezone and postal as well.
 TrackSchema.index(
-  { ip: 'text', url: 'text', referrer: 'text', userAgent: 'text', meta: 'text' },
+  {
+    ip: 'text',
+    url: 'text',
+    referrer: 'text',
+    userAgent: 'text',
+    meta: 'text',
+    'geo.city': 'text',
+    'geo.region': 'text',
+    'geo.country_name': 'text',
+    'geo.org': 'text',
+    'geo.timezone': 'text',
+    'geo.postal': 'text'
+  },
   { name: 'TrackTextIndex', language_override: 'lang' }
 );
 

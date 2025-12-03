@@ -45,19 +45,20 @@ router.get('/trackers', async (req, res) => {
     const sortDir = req.query.sort === 'asc' ? 1 : -1;
     const skip = (page - 1) * limit;
 
-    const filter = q
-      ? { $or: [
-          { ip: { $regex: q, $options: 'i' } },
-          { url: { $regex: q, $options: 'i' } },
-          { referrer: { $regex: q, $options: 'i' } },
-          { userAgent: { $regex: q, $options: 'i' } },
-          { language: { $regex: q, $options: 'i' } },
-          { 'meta': { $regex: q, $options: 'i' } }
-        ] }
-      : {};
+    let filter = {};
+    let projection = null;
+    let sortObj = { timestamp: sortDir };
+
+    if (q) {
+      // Use MongoDB text search (backed by the TrackTextIndex which includes geo fields)
+      filter = { $text: { $search: q } };
+      projection = { score: { $meta: 'textScore' } };
+      sortObj = { score: { $meta: 'textScore' }, timestamp: sortDir };
+    }
 
     const total = await Track.countDocuments(filter);
-    const data = await Track.find(filter).sort({ timestamp: sortDir }).skip(skip).limit(limit);
+    let query = Track.find(filter, projection).sort(sortObj).skip(skip).limit(limit);
+    const data = await query.exec();
 
     res.json({ total, page, limit, data });
   } catch (err) {
