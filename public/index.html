@@ -4,15 +4,30 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Tracker Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    body{font-family:Arial,Helvetica,sans-serif;margin:16px}
-    .tabs{display:flex;gap:8px;margin-bottom:12px}
-    .tab{padding:8px 12px;border:1px solid #ccc;cursor:pointer}
-    .tab.active{background:#0070f3;color:#fff}
-    .controls{margin-bottom:8px}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:8px;border:1px solid #ddd;text-align:left}
-    th.sortable{cursor:pointer}
+    :root{--accent:#0f62fe;--muted:#6b7280;--bg:#f7fafc}
+    html,body{height:100%}
+    body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin:0; background:var(--bg); color:#0f1720}
+    .navbar{background:#fff;border-bottom:1px solid #e6edf3;padding:12px 24px;display:flex;align-items:center;justify-content:space-between}
+    .brand{font-weight:700;color:var(--accent);letter-spacing:0.2px}
+    .container{max-width:1100px;margin:28px auto;padding:0 16px}
+    .card{background:#fff;border:1px solid #e6edf3;border-radius:10px;padding:18px;box-shadow:0 4px 12px rgba(15,22,32,0.04)}
+    .header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .tabs{display:flex;gap:8px}
+    .tab{padding:8px 12px;border-radius:8px;border:1px solid transparent;cursor:pointer;font-weight:600;color:#334155}
+    .tab.active{background:var(--accent);color:#fff}
+    .controls{display:flex;gap:8px;align-items:center}
+    .search{padding:10px 12px;border-radius:8px;border:1px solid #e6edf3;width:360px}
+    .search:focus{outline:none;box-shadow:0 0 0 3px rgba(15,98,254,0.08);border-color:var(--accent)}
+    .meta{color:var(--muted);font-size:13px}
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    th,td{padding:10px;border-bottom:1px solid #f1f5f9;text-align:left}
+    thead th{font-size:13px;color:#334155;font-weight:600}
+    tbody tr:hover{background:#fbfcfe}
+    .footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px;padding:18px}
+    .pill{background:#eef6ff;color:var(--accent);padding:6px 10px;border-radius:999px;font-weight:600}
+    @media (max-width:900px){ .search{width:100%} .container{padding:0 12px} }
   </style>
 </head>
 <body>
@@ -23,9 +38,9 @@
   </div>
 
   <div class="controls">
-    <input id="search" placeholder="Search..." style="width:320px;padding:6px" />
-    <select id="sort"><option value="desc">Date desc</option><option value="asc">Date asc</option></select>
-    <button id="btnSearch">Search</button>
+    <input id="search" class="search" placeholder="Search messages, urls, geo (city, country, org)..." />
+    <select id="sort" style="padding:10px;border-radius:8px;border:1px solid #e6edf3"><option value="desc">Date desc</option><option value="asc">Date asc</option></select>
+    <div id="status" class="meta">&nbsp;</div>
   </div>
 
   <div id="content"></div>
@@ -35,7 +50,16 @@
 
     document.getElementById('tab-messages').addEventListener('click',()=>{switchTab('messages')});
     document.getElementById('tab-trackers').addEventListener('click',()=>{switchTab('trackers')});
-    document.getElementById('btnSearch').addEventListener('click',()=>{state.q=document.getElementById('search').value; state.page=1; load();});
+    const searchEl = document.getElementById('search');
+    const statusEl = document.getElementById('status');
+    let debounceTimer = null;
+    searchEl.addEventListener('input', (e) => {
+      state.q = e.target.value;
+      state.page = 1;
+      statusEl.textContent = 'Typing...';
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(()=>{ statusEl.textContent = 'Searching...'; load(); }, 350);
+    });
     document.getElementById('sort').addEventListener('change',e=>{state.sort=e.target.value; state.page=1; load();});
 
     function switchTab(tab){ state.tab=tab; document.getElementById('tab-messages').classList.toggle('active', tab==='messages'); document.getElementById('tab-trackers').classList.toggle('active', tab==='trackers'); state.page=1; load(); }
@@ -98,5 +122,7 @@
     // initial load
     load();
   </script>
+
+  <div class="footer">&copy; 2025 <strong class="brand">VisitTracker</strong> — Simple, elegant tracking for founders.<br/>Built with ♥ for fast debugging and analysis.</div>
 </body>
 </html>
